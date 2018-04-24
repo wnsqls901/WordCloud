@@ -7,12 +7,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
 
-public class Main extends Application {
+public class WordCloudGuiApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("view/wordCloudGui.fxml"));
+			loader.setLocation(getClass().getResource("view/WordCloudGui.fxml"));
 			AnchorPane pane = loader.load();
 			Scene scene = new Scene(pane);
 			primaryStage.setTitle("A Word Game by Junbin Kwon");
