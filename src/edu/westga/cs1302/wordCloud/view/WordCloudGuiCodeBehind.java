@@ -4,11 +4,14 @@ import java.io.File;
 
 import edu.westga.cs1302.wordCloud.model.WordData;
 import edu.westga.cs1302.wordCloud.viewmodel.WordCloudGuiViewModel;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
@@ -63,7 +66,12 @@ public class WordCloudGuiCodeBehind {
 
     @FXML
     private Button generateButton;
-
+    
+    @FXML
+    private ComboBox<String> comboBox;
+    
+    private ObservableList<String> list = FXCollections.observableArrayList("One","Two","Three");
+    
     private WordCloudGuiViewModel viewmodel;
   
     public WordCloudGuiCodeBehind() {
@@ -72,7 +80,7 @@ public class WordCloudGuiCodeBehind {
     
     @FXML
 	private void initialize() {
-
+    		this.comboBox.setItems(list);
 		WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(false);		
 		WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(false);
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
@@ -193,6 +201,21 @@ public class WordCloudGuiCodeBehind {
 				}
 			}
 		});
+	}
+	@FXML
+	void changeColor(ActionEvent event) {
+		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
+				, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+		this.canvas.getGraphicsContext2D().setLineWidth(2);
+		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+		if (this.comboBox.getValue().toString().equals("One")) {
+			this.viewmodel.changeColor(1);
+		}else if (this.comboBox.getValue().toString().equals("Two")) {
+			this.viewmodel.changeColor(2);
+		}else if (this.comboBox.getValue().toString().equals("Three")) {
+			this.viewmodel.changeColor(3);
+		}
 	}
 
 }

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import edu.westga.cs1302.wordCloud.model.WordData;
@@ -17,7 +19,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -28,14 +29,17 @@ public class WordCloudGuiViewModel {
 	private ListProperty<WordData> wordsProperty;
 	private StringProperty displayProperty;
 	private WordManager manage;
+	private ArrayList<Color> colors;
 	
 	public WordCloudGuiViewModel() {
+		
 		this.wordProperty = new SimpleStringProperty();
 		this.frequencyProperty = new SimpleStringProperty();
 		this.displayProperty = new SimpleStringProperty();
 
 		this.manage = new WordManager();
 		this.wordsProperty = new SimpleListProperty<WordData>(FXCollections.observableArrayList(this.manage));
+		this.colors = new ArrayList<Color>();
 		
 	}
 
@@ -128,7 +132,6 @@ public class WordCloudGuiViewModel {
 		this.displayProperty.set(display);
 	}
 	public void generateWords(GraphicsContext gc) {
-				
 		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
 		gc.setStroke(Color.BLACK);
@@ -138,28 +141,11 @@ public class WordCloudGuiViewModel {
 		int x = 0;
 		int y = 50;
 		int size;
-		int color = 0;
-		Paint colorName = null;
+		int index = 0;
 		for (WordData word : this.manage) {
-			switch (color) {
-				case 0:
-					colorName = Color.INDIANRED;
-					break;
-				case 1:
-					colorName = Color.LIGHTSEAGREEN;
-					break;
-				case 2:
-					colorName = Color.BLUEVIOLET;
-					break;
-				case 3:
-					colorName = Color.YELLOWGREEN;
-					break;
-				case 4: 
-					colorName = Color.SADDLEBROWN;
-					break;
-				
+			if (index == this.colors.size() -1) {
+				index = 0;
 			}
-			
 			size = 10;
 			Text text = new Text(word.getData());
 			if (word.getFrequency() >= 5) {
@@ -167,13 +153,12 @@ public class WordCloudGuiViewModel {
 			} else {
 				size *= word.getFrequency();
 			}
-
-		
 			
 			Font font = new Font(size);
 			text.setFont(font);
 			gc.setFont(text.getFont());
-			gc.setFill(colorName);
+			gc.setFill(this.colors.get(index));
+			index++;
 			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
 				x = 0;
 				y += 50;
@@ -186,11 +171,6 @@ public class WordCloudGuiViewModel {
 			//System.out.println(x + " "+ gc.getCanvas().getLayoutBounds().getMaxX() + " " + 31);
 		
 			
-			if (color >= 4) {
-				color = 0;
-			} else {
-				color++;
-			}
 		
 		}	
 	}
@@ -225,4 +205,29 @@ public class WordCloudGuiViewModel {
         }
 		
 	}
+	public void changeColor(int number) {
+
+		this.colors = new ArrayList<Color>();
+	
+		if (number == 1) {
+			for (int index = 0; index < 20; index++) {
+				Random rand = new Random();
+				Color newColor = Color.rgb(rand.nextInt(256), 0, 0);
+				this.colors.add(index, newColor);
+			}
+		} else if (number == 2) {
+			for (int index = 0; index < 20; index++) {
+				Random rand = new Random();
+				Color newColor = Color.rgb(0, rand.nextInt(256), 0);
+				this.colors.add(index, newColor);
+			}
+		} else if (number == 3) {
+			for (int index = 0; index < 20; index++) {
+				Random rand = new Random();
+				Color newColor = Color.rgb(0, 0, rand.nextInt(256));
+				this.colors.add(index, newColor);
+			}
+		}
+	}
+
 }
