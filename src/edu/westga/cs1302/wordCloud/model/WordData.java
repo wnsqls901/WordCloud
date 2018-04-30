@@ -31,7 +31,7 @@ public class WordData {
 		this.frequency = frequency;
 	}
 	public String toString() {
-		return this.getData() + ": " + this.frequency;
+		return this.getData().toLowerCase() + ": " + this.frequency;
 	}
 	
 }

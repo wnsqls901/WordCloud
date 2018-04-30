@@ -121,7 +121,7 @@ public class WordCloudGuiViewModel {
 	public void updateDisplay() {
 		String display = "";
 		for (WordData word : this.manage) {
-			display += word.toString().toLowerCase() + System.lineSeparator();
+			display += word + System.lineSeparator();
 		}
 		this.displayProperty.set(display);
 	}
@@ -179,7 +179,7 @@ public class WordCloudGuiViewModel {
 				y += 50;
 			}
 			
-			gc.fillText(text.getText(), x, y);
+			gc.fillText(text.getText().toLowerCase(), x, y);
 
 			x += text.getLayoutBounds().getWidth() + 3;
 

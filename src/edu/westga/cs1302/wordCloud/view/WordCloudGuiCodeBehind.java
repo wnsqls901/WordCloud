@@ -110,7 +110,7 @@ public class WordCloudGuiCodeBehind {
     @FXML
 	void handleFileLoad(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Image File");
+		fileChooser.setTitle("Load Image File");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Text Files", "*.txt"),
 				new ExtensionFilter("All Files", "*.*"));
 
@@ -125,8 +125,8 @@ public class WordCloudGuiCodeBehind {
 	@FXML
 	void handleHelpAbout(ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("About Course Manager");
-		alert.setHeaderText("Course Manager by WolfBytes Software");
+		alert.setTitle("About Word Cloud");
+		alert.setHeaderText("Word Cloud Manager by Junbin Kwon");
 		alert.setContentText("Version 1.0");
 
 		alert.showAndWait();
