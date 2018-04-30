@@ -87,6 +87,10 @@ public class WordCloudGuiCodeBehind {
     void handleUpdate(ActionEvent event) {
     		this.viewmodel.updateWord();
     }
+    @FXML
+    void handleGenerate(ActionEvent event) {
+    		this.viewmodel.generateWords(canvas.getGraphicsContext2D());
+    }
 	@FXML
     void handleFileLoad(ActionEvent event) {
 

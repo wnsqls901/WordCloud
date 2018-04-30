@@ -7,8 +7,13 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class WordCloudGuiViewModel {
 	
@@ -61,12 +66,14 @@ public class WordCloudGuiViewModel {
 				alert.setContentText("You cannot add the word since it already exists");
 	
 				alert.showAndWait();
-			} else {
+			} else { 
 				data = new WordData(word, frequency);
-			}
-			if (this.manage.add(data)) {
-				this.updateDisplay();
-				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+				
+				if (this.manage.add(data)) {
+	
+					this.updateDisplay();
+					this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+				}
 			}
 		}
 		this.wordProperty.set("");
@@ -113,5 +120,63 @@ public class WordCloudGuiViewModel {
 			display += word + System.lineSeparator();
 		}
 		this.displayProperty.set(display);
+	}
+	public void generateWords(GraphicsContext gc) {
+		
+		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+		int x = 0;
+		int y = 50;
+		int size;
+		int color = 0;
+		Paint colorName = null;
+		for (WordData word : this.manage) {
+			switch (color) {
+				case 0:
+					colorName = Color.INDIANRED;
+					break;
+				case 1:
+					colorName = Color.LIGHTSEAGREEN;
+					break;
+				case 2:
+					colorName = Color.BLUEVIOLET;
+					break;
+				case 3:
+					colorName = Color.YELLOWGREEN;
+					break;
+				case 4: 
+					colorName = Color.SADDLEBROWN;
+					break;
+				
+			}
+			
+			size = 10;
+			Text text = new Text(word.getData());
+			if (word.getFrequency() >= 5) {
+				size = 50;
+			} else {
+				size *= word.getFrequency();
+			}
+
+			Font font = new Font(size);
+			text.setFont(font);
+			gc.setFont(text.getFont());
+			gc.setFill(colorName);
+			gc.fillText(text.getText(), x, y);
+
+			System.out.println(x + " " + text.getLayoutBounds().getWidth() +" "+ gc.getCanvas().getLayoutBounds().getMaxX());
+		
+			x += text.getLayoutBounds().getWidth() + 3;
+			if (x >= gc.getCanvas().getLayoutBounds().getMaxX()) {
+				y += 50;
+			}
+			
+			if (color >= 4) {
+				color = 0;
+			} else {
+				color++;
+			}
+		
+		}
+		
 	}
 }
