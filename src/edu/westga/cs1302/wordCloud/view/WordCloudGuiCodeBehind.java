@@ -1,5 +1,7 @@
 package edu.westga.cs1302.wordCloud.view;
 
+import edu.westga.cs1302.wordCloud.model.WordData;
+import edu.westga.cs1302.wordCloud.viewmodel.WordCloudGuiViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -23,7 +25,7 @@ public class WordCloudGuiCodeBehind {
     private Canvas canvas;
 
     @FXML
-    private ListView<?> wordListView;
+    private ListView<WordData> wordListView;
 
     @FXML
     private MenuItem ListViewMenuItem;
@@ -40,7 +42,58 @@ public class WordCloudGuiCodeBehind {
     @FXML
     private Button generateButton;
 
+    private WordCloudGuiViewModel viewmodel;
+  
+    public WordCloudGuiCodeBehind() {
+    		this.viewmodel = new WordCloudGuiViewModel();
+    }
+    
     @FXML
+	private void initialize() {
+    		this.bindToViewModel();
+
+    		//this.setupListenerForListView();
+    }
+
+	private void setupListenerForListView() {
+		this.wordListView.getSelectionModel().selectedItemProperty()
+				.addListener((observable, oldWord, newWord) -> {
+					if (newWord != null) {
+						this.wordTextField.textProperty().set(newWord.getData());
+						Integer count = newWord.getFrequency();
+						this.frequencyTextField.textProperty().set(count.toString());
+					}
+				});
+	}
+
+    private void bindToViewModel() {
+
+		this.wordTextField.textProperty().bindBidirectional(this.viewmodel.getWordProperty());
+		this.frequencyTextField.textProperty().bindBidirectional(this.viewmodel.getFrequencyProperty());
+		this.wordListView.itemsProperty().bindBidirectional(this.viewmodel.getWordsProperty());
+
+	}
+
+    @FXML
+    void handleAdd() {
+		this.viewmodel.addWord();
+    }
+
+    @FXML
+    void setupForEventHandlerForAddButtonssetupForEventHandlerForGenerateButtons(ActionEvent event) {
+
+    }
+
+    @FXML
+    void setupForEventHandlerForAddButtonssetupForEventHandlerForRemoveButtons(ActionEvent event) {
+
+    }
+
+    @FXML
+    void setupForEventHandlerForAddButtonssetupForEventHandlerForUpdateButtons(ActionEvent event) {
+
+    }
+	@FXML
     void handleFileLoad(ActionEvent event) {
 
     }

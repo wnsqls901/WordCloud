@@ -30,6 +30,8 @@ public class WordData {
 	public void setFrequency(int frequency) {
 		this.frequency = frequency;
 	}
-	
+	public String toString() {
+		return this.getData() + ": " + this.frequency;
+	}
 	
 }
