@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
@@ -20,7 +21,13 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class WordCloudGuiCodeBehind {
-	
+
+    @FXML
+    private Label frequencyErrorLabel;
+    
+    @FXML
+    private Label wordErrorLabel;
+    
 	@FXML
 	private AnchorPane guiPane;
 
@@ -66,10 +73,13 @@ public class WordCloudGuiCodeBehind {
     @FXML
 	private void initialize() {
 
+		WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(false);		
+		WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(false);
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
     		this.bindToViewModel();
+    		this.setupListenersForValidation();
 
     		this.setupListenerForListView();
     }
@@ -160,5 +170,29 @@ public class WordCloudGuiCodeBehind {
     void handleRemoveOrUpdate(ActionEvent event) {
 
     }
+	private void setupListenersForValidation() {
+		this.wordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				WordCloudGuiCodeBehind.this.wordTextField.setText(newValue.toLowerCase());
+				
+				if (!newValue.matches("[a-zA-Z-]*")) {
+					WordCloudGuiCodeBehind.this.wordTextField.setText(oldValue);
+					WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(true);
+				} else {
+					WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(false);
+				}
+			}
+		});
+		this.frequencyTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				if (!newValue.matches("[0-9]*")) {
+					WordCloudGuiCodeBehind.this.frequencyTextField.setText(oldValue);
+					WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(true);
+				} else {
+					WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(false);						
+				}
+			}
+		});
+	}
 
 }
