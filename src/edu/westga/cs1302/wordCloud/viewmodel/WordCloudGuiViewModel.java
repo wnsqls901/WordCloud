@@ -40,6 +40,12 @@ public class WordCloudGuiViewModel {
 		this.manage = new WordManager();
 		this.wordsProperty = new SimpleListProperty<WordData>(FXCollections.observableArrayList(this.manage));
 		this.colors = new ArrayList<Color>();
+
+		for (int index = 0; index < 20; index++) {
+			Random rand = new Random();
+			Color newColor = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+			this.colors.add(index, newColor);
+		}
 		
 	}
 
@@ -111,7 +117,7 @@ public class WordCloudGuiViewModel {
 		this.wordProperty.set("");
 		this.frequencyProperty.set("");
 	}
-	public void removeWord() {
+	public boolean removeWord() {
 		if (this.wordProperty.getValue() != null && !this.wordProperty.getValue().isEmpty()) {
 			String word = this.wordProperty.getValue();
 			if (this.manage.containsWord(word)) {
@@ -123,6 +129,7 @@ public class WordCloudGuiViewModel {
 
 		this.wordProperty.set("");
 		this.frequencyProperty.set("");
+		return true;
 	}
 	public void updateDisplay() {
 		String display = "";
@@ -169,10 +176,8 @@ public class WordCloudGuiViewModel {
 			x += text.getLayoutBounds().getWidth() + 3;
 
 			//System.out.println(x + " "+ gc.getCanvas().getLayoutBounds().getMaxX() + " " + 31);
-		
-			
-		
 		}	
+
 	}
 	public void addWordsFromFile(File name) {
 		this.manage = new WordManager();

@@ -53,17 +53,19 @@
          <contextMenu>
             <ContextMenu>
               <items>
-                <MenuItem fx:id="ListViewMenuItem" mnemonicParsing="false" onAction="#handleRemoveOrUpdate" text="removeOrUpdate" />
+                  <MenuItem fx:id="incrementingList" mnemonicParsing="false" onAction="#handleIncrementing" text="Incrementing" />
+                  <MenuItem fx:id="decrementingList" mnemonicParsing="false" onAction="#handleDecrementing" text="Decrementing" />
+                <MenuItem fx:id="removeListItem" mnemonicParsing="false" onAction="#handleListRemove" text="Remove" />
               </items>
             </ContextMenu>
          </contextMenu>
       </ListView>
       <Button fx:id="addButton" layoutX="43.0" layoutY="166.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="37.0" prefWidth="89.0" text="Add" />
       <Button fx:id="updateButton" layoutX="159.0" layoutY="166.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="37.0" prefWidth="89.0" text="Update" />
-      <Button fx:id="removeButton" layoutX="102.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleRemove" prefHeight="37.0" prefWidth="89.0" text="Remove" />
+      <Button fx:id="removeButton" layoutX="43.0" layoutY="223.0" mnemonicParsing="false" onAction="#handleRemove" prefHeight="37.0" prefWidth="89.0" text="Remove" />
       <Button fx:id="generateButton" layoutX="28.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleGenerate" prefHeight="29.0" prefWidth="139.0" text="Generate Cloud" />
       <Label fx:id="wordErrorLabel" layoutX="28.0" layoutY="89.0" text="only alphabetic characters and hyphen" textFill="RED" />
       <Label fx:id="frequencyErrorLabel" layoutX="77.0" layoutY="142.0" text="only numbers are available" textFill="RED" />
-      <ComboBox fx:id="comboBox" layoutX="191.0" layoutY="275.0" onAction="#changeColor" prefHeight="27.0" prefWidth="78.0" />
+      <ComboBox fx:id="comboBox" layoutX="159.0" layoutY="228.0" onAction="#changeColor" prefHeight="37.0" prefWidth="89.0" />
    </children>
 </AnchorPane>

@@ -4,6 +4,8 @@ import java.io.File;
 
 import edu.westga.cs1302.wordCloud.model.WordData;
 import edu.westga.cs1302.wordCloud.viewmodel.WordCloudGuiViewModel;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +27,12 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class WordCloudGuiCodeBehind {
 
+    @FXML
+    private MenuItem incrementingList;
+
+    @FXML
+    private MenuItem decrementingList;
+    
     @FXML
     private Label frequencyErrorLabel;
     
@@ -53,7 +61,7 @@ public class WordCloudGuiCodeBehind {
     private ListView<WordData> wordListView;
 
     @FXML
-    private MenuItem ListViewMenuItem;
+    private MenuItem removeListItem;
 
     @FXML
     private Button addButton;
@@ -70,7 +78,7 @@ public class WordCloudGuiCodeBehind {
     @FXML
     private ComboBox<String> comboBox;
     
-    private ObservableList<String> list = FXCollections.observableArrayList("One","Two","Three");
+    private ObservableList<String> list = FXCollections.observableArrayList("Hot","Forest","Cold");
     
     private WordCloudGuiViewModel viewmodel;
   
@@ -107,6 +115,11 @@ public class WordCloudGuiCodeBehind {
 		this.wordTextField.textProperty().bindBidirectional(this.viewmodel.getWordProperty());
 		this.frequencyTextField.textProperty().bindBidirectional(this.viewmodel.getFrequencyProperty());
 		this.wordListView.itemsProperty().bindBidirectional(this.viewmodel.getWordsProperty());
+		BooleanBinding MenuItemEnabled = Bindings
+				.isNull(this.wordListView.getSelectionModel().selectedItemProperty());
+		this.removeListItem.disableProperty().bind(MenuItemEnabled);
+		this.incrementingList.disableProperty().bind(MenuItemEnabled);
+		this.decrementingList.disableProperty().bind(MenuItemEnabled);
 
 	}
 
@@ -174,10 +187,7 @@ public class WordCloudGuiCodeBehind {
 
 		alert.showAndWait();
 	}
-    @FXML
-    void handleRemoveOrUpdate(ActionEvent event) {
-
-    }
+    
 	private void setupListenersForValidation() {
 		this.wordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
@@ -209,13 +219,72 @@ public class WordCloudGuiCodeBehind {
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
-		if (this.comboBox.getValue().toString().equals("One")) {
+		if (this.comboBox.getValue().toString().equals("Hot")) {
 			this.viewmodel.changeColor(1);
-		}else if (this.comboBox.getValue().toString().equals("Two")) {
+		}else if (this.comboBox.getValue().toString().equals("Forest")) {
 			this.viewmodel.changeColor(2);
-		}else if (this.comboBox.getValue().toString().equals("Three")) {
+		}else if (this.comboBox.getValue().toString().equals("Cold")) {
 			this.viewmodel.changeColor(3);
 		}
 	}
+	@FXML
+    void handleIncrementing(ActionEvent event) {
+		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
+		if (selectedWord != null) {
+
+			selectedWord.setFrequency(selectedWord.getFrequency()+1);
+
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
+					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+			this.canvas.getGraphicsContext2D().setLineWidth(2);
+			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+		}
+    }
+
+	@FXML
+    void handleDecrementing(ActionEvent event) {
+		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
+		if (selectedWord != null) {
+			if (selectedWord.getFrequency() != 1) {
+
+				selectedWord.setFrequency(selectedWord.getFrequency()-1);
+			}
+			
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
+					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+			this.canvas.getGraphicsContext2D().setLineWidth(2);
+			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+		}
+    }
+	@FXML
+    void handleListRemove(ActionEvent event) {
+    		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
+		if (selectedWord != null) {
+			try {
+				if (!this.viewmodel.removeWord()) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("About Remove");
+					alert.setHeaderText("There is no word");
+
+					alert.showAndWait();
+				}
+			} catch (IllegalArgumentException | NullPointerException ex) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("About Remove");
+				alert.setHeaderText("Can't remove");
+
+				alert.showAndWait();
+			}
+
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
+					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+			this.canvas.getGraphicsContext2D().setLineWidth(2);
+			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+		}
+
+    }
 
 }
