@@ -123,7 +123,14 @@ public class WordCloudGuiViewModel {
 	}
 	public void generateWords(GraphicsContext gc) {
 		
+	
+		
 		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+		gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+		gc.strokeRect(0, 0, 445, 277);
+		
 		int x = 0;
 		int y = 50;
 		int size;
@@ -163,16 +170,17 @@ public class WordCloudGuiViewModel {
 			text.setFont(font);
 			gc.setFont(text.getFont());
 			gc.setFill(colorName);
-			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX() - gc.getCanvas().getLayoutX()) {
+			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
 				x = 0;
 				y += 50;
 			}
+			
 			gc.fillText(text.getText(), x, y);
-		
 
-			//System.out.println(x + " " + text.getLayoutBounds().getWidth() +" "+ gc.getCanvas().getLayoutBounds().getMaxX());
-		
 			x += text.getLayoutBounds().getWidth() + 3;
+
+			//System.out.println(x + " "+ gc.getCanvas().getLayoutBounds().getMaxX() + " " + 31);
+		
 			
 			if (color >= 4) {
 				color = 0;

@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 
 public class WordCloudGuiCodeBehind {
 
@@ -50,6 +51,10 @@ public class WordCloudGuiCodeBehind {
     
     @FXML
 	private void initialize() {
+
+		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+		this.canvas.getGraphicsContext2D().setLineWidth(2);
+		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
     		this.bindToViewModel();
 
     		this.setupListenerForListView();
@@ -67,7 +72,6 @@ public class WordCloudGuiCodeBehind {
 	}
 
     private void bindToViewModel() {
-
 		this.wordTextField.textProperty().bindBidirectional(this.viewmodel.getWordProperty());
 		this.frequencyTextField.textProperty().bindBidirectional(this.viewmodel.getFrequencyProperty());
 		this.wordListView.itemsProperty().bindBidirectional(this.viewmodel.getWordsProperty());
