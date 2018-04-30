@@ -157,18 +157,22 @@ public class WordCloudGuiViewModel {
 				size *= word.getFrequency();
 			}
 
+		
+			
 			Font font = new Font(size);
 			text.setFont(font);
 			gc.setFont(text.getFont());
 			gc.setFill(colorName);
-			gc.fillText(text.getText(), x, y);
-
-			System.out.println(x + " " + text.getLayoutBounds().getWidth() +" "+ gc.getCanvas().getLayoutBounds().getMaxX());
-		
-			x += text.getLayoutBounds().getWidth() + 3;
-			if (x >= gc.getCanvas().getLayoutBounds().getMaxX()) {
+			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX() - gc.getCanvas().getLayoutX()) {
+				x = 0;
 				y += 50;
 			}
+			gc.fillText(text.getText(), x, y);
+		
+
+			//System.out.println(x + " " + text.getLayoutBounds().getWidth() +" "+ gc.getCanvas().getLayoutBounds().getMaxX());
+		
+			x += text.getLayoutBounds().getWidth() + 3;
 			
 			if (color >= 4) {
 				color = 0;
