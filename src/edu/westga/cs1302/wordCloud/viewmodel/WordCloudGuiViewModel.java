@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class WordCloudGuiViewModel {
 	
@@ -43,22 +45,68 @@ public class WordCloudGuiViewModel {
 	}
 	
 	public void addWord() {
-
-		String word = this.wordProperty.getValue();
-		int frequency = Integer.parseInt(this.frequencyProperty.get());
-
 		WordData data = null;
-		data = new WordData(word, frequency);
-		
-		if (this.manage.add(data)) {
-			this.wordProperty.set("");
-			this.frequencyProperty.set("");
-			this.updateDisplay();
-			this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
-			
-		}
-	}
+		int frequency;
+		String word;
+		if (this.wordProperty.getValue() != null && this.frequencyProperty.getValue() != null
+				&& !this.wordProperty.getValue().isEmpty() && !this.frequencyProperty.getValue().isEmpty()) {
+			word = this.wordProperty.getValue();
+			frequency = Integer.parseInt(this.frequencyProperty.get());
 	
+			if (this.manage.containsWord(word)) {
+	
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Already exist");
+				alert.setHeaderText("Error");
+				alert.setContentText("You cannot add the word since it already exists");
+	
+				alert.showAndWait();
+			} else {
+				data = new WordData(word, frequency);
+			}
+			if (this.manage.add(data)) {
+				this.updateDisplay();
+				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			}
+		}
+		this.wordProperty.set("");
+		this.frequencyProperty.set("");
+	}
+	public void updateWord() {
+		if (this.wordProperty.getValue() != null && this.frequencyProperty.getValue() != null
+				&& !this.wordProperty.getValue().isEmpty() && !this.frequencyProperty.getValue().isEmpty()) {
+			String word = this.wordProperty.getValue();
+			int frequency = Integer.parseInt(this.frequencyProperty.get());
+			if (this.manage.containsWord(word)) {
+				this.manage.getFrequencyByWord(word).setFrequency(frequency);
+				this.updateDisplay();
+				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			} else {
+
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Word doesn't exist");
+				alert.setHeaderText("Error");
+				alert.setContentText("You cannot update the word since it doesn't exists");
+	
+				alert.showAndWait();
+			}
+		}
+		this.wordProperty.set("");
+		this.frequencyProperty.set("");
+	}
+	public void removeWord() {
+		if (this.wordProperty.getValue() != null && !this.wordProperty.getValue().isEmpty()) {
+			String word = this.wordProperty.getValue();
+			if (this.manage.containsWord(word)) {
+				this.manage.removeByWord(word);
+				this.updateDisplay();
+				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			}
+		}
+
+		this.wordProperty.set("");
+		this.frequencyProperty.set("");
+	}
 	public void updateDisplay() {
 		String display = "";
 		for (WordData word : this.manage) {

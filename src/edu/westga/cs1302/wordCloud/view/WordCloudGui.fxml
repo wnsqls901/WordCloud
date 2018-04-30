@@ -53,8 +53,8 @@
          </contextMenu>
       </ListView>
       <Button fx:id="addButton" layoutX="38.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="37.0" prefWidth="89.0" text="Add" />
-      <Button fx:id="updateButton" layoutX="154.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="37.0" prefWidth="89.0" text="Update" />
-      <Button fx:id="removeButton" layoutX="97.0" layoutY="180.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="89.0" text="Remove" />
+      <Button fx:id="updateButton" layoutX="154.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="37.0" prefWidth="89.0" text="Update" />
+      <Button fx:id="removeButton" layoutX="97.0" layoutY="180.0" mnemonicParsing="false" onAction="#handleRemove" prefHeight="37.0" prefWidth="89.0" text="Remove" />
       <Button fx:id="generateButton" layoutX="28.0" layoutY="274.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="139.0" text="Generate Cloud" />
    </children>
 </AnchorPane>

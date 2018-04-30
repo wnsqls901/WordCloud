@@ -52,7 +52,7 @@ public class WordCloudGuiCodeBehind {
 	private void initialize() {
     		this.bindToViewModel();
 
-    		//this.setupListenerForListView();
+    		this.setupListenerForListView();
     }
 
 	private void setupListenerForListView() {
@@ -80,18 +80,12 @@ public class WordCloudGuiCodeBehind {
     }
 
     @FXML
-    void setupForEventHandlerForAddButtonssetupForEventHandlerForGenerateButtons(ActionEvent event) {
-
+    void handleRemove(ActionEvent event) {
+    		this.viewmodel.removeWord();
     }
-
     @FXML
-    void setupForEventHandlerForAddButtonssetupForEventHandlerForRemoveButtons(ActionEvent event) {
-
-    }
-
-    @FXML
-    void setupForEventHandlerForAddButtonssetupForEventHandlerForUpdateButtons(ActionEvent event) {
-
+    void handleUpdate(ActionEvent event) {
+    		this.viewmodel.updateWord();
     }
 	@FXML
     void handleFileLoad(ActionEvent event) {
