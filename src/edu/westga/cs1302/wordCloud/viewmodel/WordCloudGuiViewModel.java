@@ -1,5 +1,9 @@
 package edu.westga.cs1302.wordCloud.viewmodel;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import edu.westga.cs1302.wordCloud.model.WordData;
 import edu.westga.cs1302.wordCloud.model.WordManager;
 import javafx.beans.property.ListProperty;
@@ -117,7 +121,7 @@ public class WordCloudGuiViewModel {
 	public void updateDisplay() {
 		String display = "";
 		for (WordData word : this.manage) {
-			display += word + System.lineSeparator();
+			display += word.toString().toLowerCase() + System.lineSeparator();
 		}
 		this.displayProperty.set(display);
 	}
@@ -188,7 +192,26 @@ public class WordCloudGuiViewModel {
 				color++;
 			}
 		
+		}	
+	}
+	public void addWordsFromFile(File name) {
+		this.manage = new WordManager();
+		try (Scanner in = new Scanner(name)) {
+			while (in.hasNextLine()) {
+				String word = in.next();
+				if (!this.manage.containsWord(word)) {
+					WordData data = new WordData(word, 1);
+					this.manage.add(data);
+				} else if (this.manage.containsWord(word)) {
+					this.manage.getFrequencyByWord(word).setFrequency(this.manage.getFrequencyByWord(word).getFrequency() + 1);
+				}
+
+				this.updateDisplay();
+				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 	}
 }

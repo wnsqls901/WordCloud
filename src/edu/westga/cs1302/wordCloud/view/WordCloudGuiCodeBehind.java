@@ -1,18 +1,29 @@
 package edu.westga.cs1302.wordCloud.view;
 
+import java.io.File;
+
 import edu.westga.cs1302.wordCloud.model.WordData;
 import edu.westga.cs1302.wordCloud.viewmodel.WordCloudGuiViewModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class WordCloudGuiCodeBehind {
-
+	
+	@FXML
+	private AnchorPane guiPane;
+	
     @FXML
     private MenuItem fileLoadMenuItem;
 
@@ -95,11 +106,31 @@ public class WordCloudGuiCodeBehind {
     void handleGenerate(ActionEvent event) {
     		this.viewmodel.generateWords(canvas.getGraphicsContext2D());
     }
+    
+    @FXML
+	void handleFileLoad(ActionEvent event) {
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Image File");
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("Text Files", "*.txt"),
+				new ExtensionFilter("All Files", "*.*"));
+
+		Stage stage = (Stage) this.guiPane.getScene().getWindow();
+		File selectedFile = fileChooser.showOpenDialog(stage);
+		if (selectedFile != null) {
+			this.viewmodel.addWordsFromFile(selectedFile);
+		}
+
+	}
+
 	@FXML
-    void handleFileLoad(ActionEvent event) {
+	void handleHelpAbout(ActionEvent event) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("About Course Manager");
+		alert.setHeaderText("Course Manager by WolfBytes Software");
+		alert.setContentText("Version 1.0");
 
-    }
-
+		alert.showAndWait();
+	}
     @FXML
     void handleRemoveOrUpdate(ActionEvent event) {
 
