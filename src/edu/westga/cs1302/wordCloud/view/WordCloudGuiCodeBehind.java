@@ -23,6 +23,9 @@ public class WordCloudGuiCodeBehind {
 	
 	@FXML
 	private AnchorPane guiPane;
+
+    @FXML
+    private MenuItem fileSaveMenuItem;
 	
     @FXML
     private MenuItem fileLoadMenuItem;
@@ -122,6 +125,28 @@ public class WordCloudGuiCodeBehind {
 
 	}
 
+    @FXML
+	void handleFileSave(ActionEvent event) {
+    		if (this.viewmodel.getWordsProperty().isEmpty()) {
+    			Alert alert = new Alert(AlertType.INFORMATION);
+    			alert.setTitle("You cannot save");
+    			alert.setHeaderText("There is no words in word bank");
+    			alert.showAndWait();
+    		} else {
+    	   		FileChooser fileChooser = new FileChooser();
+    	        fileChooser.setTitle("Save Image");
+    	         
+    	        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+    	        fileChooser.getExtensionFilters().add(extFilter);
+
+    	 		Stage stage = (Stage) this.guiPane.getScene().getWindow();
+    	        File selectedFile = fileChooser.showSaveDialog(stage);
+    	        if(selectedFile != null){
+    	           this.viewmodel.saveWordsToFile(selectedFile);
+    	        }
+	
+    		}        
+    }
 	@FXML
 	void handleHelpAbout(ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION);

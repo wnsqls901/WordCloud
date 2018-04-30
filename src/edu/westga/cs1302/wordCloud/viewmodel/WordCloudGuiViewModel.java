@@ -2,6 +2,8 @@ package edu.westga.cs1302.wordCloud.viewmodel;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 import edu.westga.cs1302.wordCloud.model.WordData;
@@ -126,9 +128,7 @@ public class WordCloudGuiViewModel {
 		this.displayProperty.set(display);
 	}
 	public void generateWords(GraphicsContext gc) {
-		
-	
-		
+				
 		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
 		gc.setStroke(Color.BLACK);
@@ -199,18 +199,30 @@ public class WordCloudGuiViewModel {
 		try (Scanner in = new Scanner(name)) {
 			while (in.hasNextLine()) {
 				String word = in.next();
-				if (!this.manage.containsWord(word)) {
-					WordData data = new WordData(word, 1);
-					this.manage.add(data);
-				} else if (this.manage.containsWord(word)) {
-					this.manage.getFrequencyByWord(word).setFrequency(this.manage.getFrequencyByWord(word).getFrequency() + 1);
+				if (word.matches("^[a-zA-Z-]*$") && word.length() >= 3 ) {	
+					if (!this.manage.containsWord(word)) {
+						WordData data = new WordData(word, 1);
+						this.manage.add(data);
+					} else if (this.manage.containsWord(word)) {
+						this.manage.getFrequencyByWord(word).setFrequency(this.manage.getFrequencyByWord(word).getFrequency() + 1);
+					}
 				}
-
 				this.updateDisplay();
 				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void saveWordsToFile(File selectedFile) {
+		try (FileWriter fileWriter = new FileWriter(selectedFile)){
+			for (WordData data : this.manage) {
+	            fileWriter.write(data.toString() + System.lineSeparator());
+			}
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+		
 	}
 }
