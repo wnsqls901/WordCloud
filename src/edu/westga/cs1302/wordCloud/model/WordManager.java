@@ -47,6 +47,9 @@ public class WordManager implements  Collection<WordData>{
 
 	@Override
 	public boolean addAll(Collection<? extends WordData> words) {
+		if (words == null) {
+			throw new IllegalArgumentException("words should not be null");
+		}
 		for (WordData word : words) {
 			if (word == null) {
 				throw new IllegalArgumentException("word should not be null");
@@ -72,6 +75,9 @@ public class WordManager implements  Collection<WordData>{
 
 	@Override
 	public boolean containsAll(Collection<?> words) {
+		if (words == null) {
+			throw new IllegalArgumentException("words should not be null");
+		}
 		for (Object word : words) {
 			if (word == null) {
 				throw new IllegalArgumentException("word should not be null");
@@ -105,6 +111,9 @@ public class WordManager implements  Collection<WordData>{
 
 	@Override
 	public boolean removeAll(Collection<?> words) {
+		if (words == null) {
+			throw new IllegalArgumentException("words should not be null");
+		}
 		boolean removedAll = true;
 
 		for (Object word : words) {
@@ -137,6 +146,9 @@ public class WordManager implements  Collection<WordData>{
 
 	@Override
 	public <T> T[] toArray(T[] word) {
+		if (word == null) {
+			throw new IllegalArgumentException("array should not be null");
+		}
 		return this.wordManage.values().toArray(word);
 	}
 }

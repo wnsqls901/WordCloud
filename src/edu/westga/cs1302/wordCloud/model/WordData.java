@@ -22,9 +22,19 @@ public class WordData {
 		return data;
 	}
 	public void setData(String data) {
+		if (data == null) {
+			throw new IllegalArgumentException("word should not be null.");
+		}
+		if (data.isEmpty()) {
+			throw new IllegalArgumentException("word should not be empty.");
+		}
 		this.data = data;
 	}
 	public int getFrequency() {
+
+		if (frequency <= 0) {
+			throw new IllegalArgumentException("frequency always should not be negative value.");
+		}
 		return frequency;
 	}
 	public void setFrequency(int frequency) {

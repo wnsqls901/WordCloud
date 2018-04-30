@@ -210,7 +210,6 @@ public class WordCloudGuiViewModel {
 				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
