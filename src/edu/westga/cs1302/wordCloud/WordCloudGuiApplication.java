@@ -7,7 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
 
+/**
+ * The Class WordCloudGuiApplication.
+ * @author Junbin Kwon
+ * @version 2018-05-01
+ */
 public class WordCloudGuiApplication extends Application {
+	
+	/* (non-Javadoc)
+	 * @see javafx.application.Application#start(javafx.stage.Stage)
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -23,6 +32,11 @@ public class WordCloudGuiApplication extends Application {
 		}
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

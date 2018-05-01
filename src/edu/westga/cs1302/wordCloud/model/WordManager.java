@@ -10,44 +10,74 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.Set;;
 
 
-public class WordManager implements  Collection<WordData>{
-	private Map<String, WordData> wordManage;
-	private ArrayList<Integer> frequencies;
-	private LinkedHashMap<String,WordData> newMap;
+/**
+ * The Class WordManager.
+ * @author Junbin Kwon
+ * @version 2018-05-01
+ */
+public class WordManager implements  Collection<WordData> {
 	
+	/** The word manage. */
+	private Map<String, WordData> wordManage;
+	
+	/** The frequencies. */
+	private ArrayList<Integer> frequencies;
+	
+	/**
+	 * Instantiates a new word manager.
+	 */
 	public WordManager() {
-		this.newMap = new LinkedHashMap<String, WordData>();
 		this.frequencies = new ArrayList<Integer>();
 		this.wordManage = new HashMap<String, WordData>();
 	}
 	
+	/**
+	 * Gets the frequency by word.
+	 *
+	 * @param word the word
+	 * @return the frequency by word
+	 */
 	public WordData getFrequencyByWord(String word) {
 		if (word == null) {
-			throw new IllegalArgumentException("word should not be null.");
+			throw new IllegalArgumentException("word should not be null...");
 		}
 		return this.wordManage.get(word);
 	}
 	
+	/**
+	 * Contains word.
+	 *
+	 * @param word the word
+	 * @return true, if successful
+	 */
 	public boolean containsWord(String word) {
 		if (word == null) {
-			throw new IllegalArgumentException("word should not be null.");
+			throw new IllegalArgumentException("word should not be null..");
 		}
 		return this.wordManage.containsKey(word);
 	}
 	
+	/**
+	 * Removes the by word.
+	 *
+	 * @param word the word
+	 * @return true, if successful
+	 */
 	public boolean removeByWord(String word) {
 		if (word == null) {
-			throw new IllegalArgumentException("word should not be null.");
+			throw new IllegalArgumentException("word should not be null....");
 		}
 		WordData removeWord = this.wordManage.remove(word);
 		
 		return (removeWord != null);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.util.Collection#add(java.lang.Object)
+	 */
 	@Override
 	public boolean add(WordData data) {
 		if (data == null) {
@@ -57,42 +87,54 @@ public class WordManager implements  Collection<WordData>{
 		return this.wordManage.containsKey(data.getData());	
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#addAll(java.util.Collection)
+	 */
 	@Override
 	public boolean addAll(Collection<? extends WordData> words) {
 		if (words == null) {
-			throw new IllegalArgumentException("words should not be null");
+			throw new IllegalArgumentException("words should not be null.....");
 		}
 		for (WordData word : words) {
 			if (word == null) {
-				throw new IllegalArgumentException("word should not be null");
+				throw new IllegalArgumentException("word should not be null......");
 			}
 			this.wordManage.put(word.getData(), word);
 		}
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#clear()
+	 */
 	@Override
 	public void clear() {
 		this.wordManage.clear();		
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#contains(java.lang.Object)
+	 */
 	@Override
 	public boolean contains(Object word) {
 		if (word == null) {
-			throw new IllegalArgumentException("word should not be null");
+			throw new IllegalArgumentException("word should not be null.......");
 		}
 		WordData theData = (WordData) word;
 		return this.wordManage.containsKey(theData.getData());
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#containsAll(java.util.Collection)
+	 */
 	@Override
 	public boolean containsAll(Collection<?> words) {
 		if (words == null) {
-			throw new IllegalArgumentException("words should not be null");
+			throw new IllegalArgumentException("words should not be null.......");
 		}
 		for (Object word : words) {
 			if (word == null) {
-				throw new IllegalArgumentException("word should not be null");
+				throw new IllegalArgumentException("word should not be null.........");
 			}
 			if (!this.contains(word)) {
 				return false;
@@ -101,26 +143,38 @@ public class WordManager implements  Collection<WordData>{
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#isEmpty()
+	 */
 	@Override
 	public boolean isEmpty() {
 		return this.wordManage.isEmpty();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#iterator()
+	 */
 	@Override
 	public Iterator<WordData> iterator() {
 		return this.wordManage.values().iterator();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#remove(java.lang.Object)
+	 */
 	@Override
 	public boolean remove(Object word) {
 		if (word == null) {
-			throw new IllegalArgumentException("word should not be null");
+			throw new IllegalArgumentException("word should not be null........");
 		}
 		WordData data = (WordData) word;
 		WordData removeData = this.wordManage.remove(data.getData());
 		return (data == removeData);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#removeAll(java.util.Collection)
+	 */
 	@Override
 	public boolean removeAll(Collection<?> words) {
 		if (words == null) {
@@ -140,13 +194,30 @@ public class WordManager implements  Collection<WordData>{
 		}
 		return removedAll;
 	}
+	
+	/**
+	 * Gets the word manage.
+	 *
+	 * @return the word manage
+	 */
 	public Map<String, WordData> getWordManage() {
 		return this.wordManage;
 	}
 
+	/**
+	 * Sets the word manage.
+	 *
+	 * @param wordManage the word manage
+	 */
 	public void setWordManage(Map<String, WordData> wordManage) {
 		this.wordManage = wordManage;
 	}
+	
+	/**
+	 * Sort by frequency.
+	 *
+	 * @return the map
+	 */
 	public Map<String, WordData> sortByFrequency() {
 		this.frequencies = new ArrayList<Integer>();
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
@@ -170,21 +241,34 @@ public class WordManager implements  Collection<WordData>{
 		}
 		return this.wordManage;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.Collection#retainAll(java.util.Collection)
+	 */
 	@Override
 	public boolean retainAll(Collection<?> arg0) {
 		throw new UnsupportedOperationException();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#size()
+	 */
 	@Override
 	public int size() {
 		return this.wordManage.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#toArray()
+	 */
 	@Override
 	public Object[] toArray() {
 		return this.wordManage.values().toArray();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Collection#toArray(java.lang.Object[])
+	 */
 	@Override
 	public <T> T[] toArray(T[] word) {
 		if (word == null) {
@@ -193,6 +277,11 @@ public class WordManager implements  Collection<WordData>{
 		return this.wordManage.values().toArray(word);
 	}
 
+	/**
+	 * Sort default.
+	 *
+	 * @return the map
+	 */
 	public Map<String, WordData>  sortDefault() {
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
 		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
@@ -215,10 +304,35 @@ public class WordManager implements  Collection<WordData>{
 		return this.wordManage;	
 	}
 
+	/**
+	 * Sort mixed.
+	 *
+	 * @return the map
+	 */
 	public Map<String, WordData> sortMixed() {
 		this.frequencies = new ArrayList<Integer>();
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
 		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
+		List<Entry<String, WordData>> listRe = new ArrayList<Entry<String, WordData>>(set);
+		this.makeCollectionsForCompare(list, listRe);
+		int size = this.wordManage.size();
+		this.wordManage = new LinkedHashMap<String, WordData>();
+		int count = 0;
+		int countRe = 0;
+		for (int index = 0; index <= size + 2; index++) {
+			if (index % 2 == 0) {
+				this.wordManage.put(list.get(count).getKey(), list.get(count).getValue());
+				count++;
+			} else if (index % 2 == 1) {
+				this.wordManage.put(listRe.get(countRe).getKey(), listRe.get(countRe).getValue());
+				countRe++;
+			}
+		}
+		return this.wordManage;
+		
+	}
+
+	private void makeCollectionsForCompare(List<Entry<String, WordData>> list, List<Entry<String, WordData>> listRe) {
 		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
 
 			@Override
@@ -231,7 +345,6 @@ public class WordManager implements  Collection<WordData>{
 				return 0;
 			}
 		});
-		List<Entry<String, WordData>> listRe = new ArrayList<Entry<String, WordData>>(set);
 		Collections.sort(listRe, new Comparator<Map.Entry<String, WordData>>() {
 
 			@Override
@@ -244,20 +357,5 @@ public class WordManager implements  Collection<WordData>{
 				return 0;
 			}
 		});
-		int size = this.wordManage.size();
-		this.wordManage = new LinkedHashMap<String, WordData>();
-		int count = 0;
-		int countRe = 0;
-		for (int index = 0; index <= size+2; index++) {
-			if (index %2 == 0) {
-				this.wordManage.put(list.get(count).getKey(), list.get(count).getValue());
-				count++;
-			} else if (index %2 == 1) {
-				this.wordManage.put(listRe.get(countRe).getKey(), listRe.get(countRe).getValue());
-				countRe++;
-			}
-		}
-		return this.wordManage;
-		
 	}
 }

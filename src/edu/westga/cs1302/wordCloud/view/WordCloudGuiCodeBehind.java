@@ -26,90 +26,127 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
+
+/**
+ * The Class WordCloudGuiCodeBehind.
+ * @author Junbin Kwon
+ * @version 2018-05-01
+ */
 public class WordCloudGuiCodeBehind {
 
+    /** The incrementing list. */
     @FXML
     private MenuItem incrementingList;
 
+    /** The decrementing list. */
     @FXML
     private MenuItem decrementingList;
     
+    /** The frequency error label. */
     @FXML
     private Label frequencyErrorLabel;
     
+    /** The word error label. */
     @FXML
     private Label wordErrorLabel;
     
+	/** The gui pane. */
 	@FXML
 	private AnchorPane guiPane;
 
+    /** The file save menu item. */
     @FXML
     private MenuItem fileSaveMenuItem;
 	
+    /** The file load menu item. */
     @FXML
     private MenuItem fileLoadMenuItem;
 
+    /** The word text field. */
     @FXML
     private TextField wordTextField;
 
+    /** The frequency text field. */
     @FXML
     private TextField frequencyTextField;
 
+    /** The canvas. */
     @FXML
     private Canvas canvas;
 
+    /** The word list view. */
     @FXML
     private ListView<WordData> wordListView;
 
+    /** The remove list item. */
     @FXML
     private MenuItem removeListItem;
 
+    /** The add button. */
     @FXML
     private Button addButton;
 
+    /** The update button. */
     @FXML
     private Button updateButton;
 
+    /** The remove button. */
     @FXML
     private Button removeButton;
 
+    /** The generate button. */
     @FXML
     private Button generateButton;
     
+    /** The color combo box. */
     @FXML
     private ComboBox<String> colorComboBox;
 
+    /** The sort combo box. */
     @FXML
     private ComboBox<String> sortComboBox;
 
+    /** The check box. */
     @FXML
     private CheckBox checkBox;
     
-    private ObservableList<String> list = FXCollections.observableArrayList("Hot","Forest","Cold");
+    /** The list. */
+    private ObservableList<String> list = FXCollections.observableArrayList("Hot", "Forest", "Cold");
 
-    private ObservableList<String> sortList = FXCollections.observableArrayList("Default","Frequency","Frequency-mix");
+    /** The sort list. */
+    private ObservableList<String> sortList = FXCollections.observableArrayList("Default", "Frequency", "Frequency-mix");
     
+    /** The viewmodel. */
     private WordCloudGuiViewModel viewmodel;
   
+    /**
+     * Instantiates a new word cloud gui code behind.
+     */
     public WordCloudGuiCodeBehind() {
-    		this.viewmodel = new WordCloudGuiViewModel();
+    	this.viewmodel = new WordCloudGuiViewModel();
     }
     
+    /**
+     * Initialize.
+     */
     @FXML
 	private void initialize() {
-    		this.colorComboBox.setItems(list);
-    		this.sortComboBox.setItems(sortList);
+    	this.colorComboBox.setItems(this.list);
+    	this.sortComboBox.setItems(this.sortList);
 		WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(false);		
 		WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(false);
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
-    		this.bindToViewModel();
-    		this.setupListenersForValidation();
+    	this.bindToViewModel();
+    	this.setupListenersForValidation();
 
-    		this.setupListenerForListView();
+    	this.setupListenerForListView();
     }
 
+	/**
+	 * Setup listener for list view.
+	 */
 	private void setupListenerForListView() {
 		this.wordListView.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldWord, newWord) -> {
@@ -121,37 +158,65 @@ public class WordCloudGuiCodeBehind {
 				});
 	}
 
+    /**
+     * Bind to view model.
+     */
     private void bindToViewModel() {
 		this.wordTextField.textProperty().bindBidirectional(this.viewmodel.getWordProperty());
 		this.frequencyTextField.textProperty().bindBidirectional(this.viewmodel.getFrequencyProperty());
 		this.wordListView.itemsProperty().bindBidirectional(this.viewmodel.getWordsProperty());
-		BooleanBinding MenuItemEnabled = Bindings
+		BooleanBinding menuItemEnabled = Bindings
 				.isNull(this.wordListView.getSelectionModel().selectedItemProperty());
-		this.removeListItem.disableProperty().bind(MenuItemEnabled);
-		this.incrementingList.disableProperty().bind(MenuItemEnabled);
-		this.decrementingList.disableProperty().bind(MenuItemEnabled);
+		this.removeListItem.disableProperty().bind(menuItemEnabled);
+		this.incrementingList.disableProperty().bind(menuItemEnabled);
+		this.decrementingList.disableProperty().bind(menuItemEnabled);
 		this.checkBox.selectedProperty().bindBidirectional(this.viewmodel.getSelectProperty());
 
 	}
 
+    /**
+     * Handle add.
+     */
     @FXML
     void handleAdd() {
 		this.viewmodel.addWord();
     }
 
+    /**
+     * Handle remove.
+     *
+     * @param event the event
+     */
     @FXML
     void handleRemove(ActionEvent event) {
-    		this.viewmodel.removeWord();
-    }
-    @FXML
-    void handleUpdate(ActionEvent event) {
-    		this.viewmodel.updateWord();
-    }
-    @FXML
-    void handleGenerate(ActionEvent event) {
-    		this.viewmodel.generateWords(canvas.getGraphicsContext2D());
+    	this.viewmodel.removeWord();
     }
     
+    /**
+     * Handle update.
+     *
+     * @param event the event
+     */
+    @FXML
+    void handleUpdate(ActionEvent event) {
+    	this.viewmodel.updateWord();
+    }
+    
+    /**
+     * Handle generate.
+     *
+     * @param event the event
+     */
+    @FXML
+    void handleGenerate(ActionEvent event) {
+    	this.viewmodel.generateWords(this.canvas.getGraphicsContext2D());
+    }
+    
+    /**
+     * Handle file load.
+     *
+     * @param event the event
+     */
     @FXML
 	void handleFileLoad(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
@@ -167,28 +232,39 @@ public class WordCloudGuiCodeBehind {
 
 	}
 
+    /**
+     * Handle file save.
+     *
+     * @param event the event
+     */
     @FXML
 	void handleFileSave(ActionEvent event) {
-    		if (this.viewmodel.getWordsProperty().isEmpty()) {
-    			Alert alert = new Alert(AlertType.INFORMATION);
-    			alert.setTitle("You cannot save");
-    			alert.setHeaderText("There is no words in word bank");
-    			alert.showAndWait();
-    		} else {
-    	   		FileChooser fileChooser = new FileChooser();
-    	        fileChooser.setTitle("Save Image");
+    	if (this.viewmodel.getWordsProperty().isEmpty()) {
+    		Alert alert = new Alert(AlertType.INFORMATION);
+    		alert.setTitle("You cannot save");
+    		alert.setHeaderText("There is no words in word bank");
+    		alert.showAndWait();
+    	} else {
+    	   	FileChooser fileChooser = new FileChooser();
+    	    fileChooser.setTitle("Save Image");
     	         
-    	        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-    	        fileChooser.getExtensionFilters().add(extFilter);
+    	    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+    	    fileChooser.getExtensionFilters().add(extFilter);
 
-    	 		Stage stage = (Stage) this.guiPane.getScene().getWindow();
-    	        File selectedFile = fileChooser.showSaveDialog(stage);
-    	        if(selectedFile != null){
-    	           this.viewmodel.saveWordsToFile(selectedFile);
-    	        }
+    	 	Stage stage = (Stage) this.guiPane.getScene().getWindow();
+    	    File selectedFile = fileChooser.showSaveDialog(stage);
+    	    if (selectedFile != null) {
+    	        this.viewmodel.saveWordsToFile(selectedFile);
+    	    }
 	
-    		}        
+    	} 
     }
+	
+	/**
+	 * Handle help about.
+	 *
+	 * @param event the event
+	 */
 	@FXML
 	void handleHelpAbout(ActionEvent event) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -199,6 +275,9 @@ public class WordCloudGuiCodeBehind {
 		alert.showAndWait();
 	}
     
+	/**
+	 * Setup listeners for validation.
+	 */
 	private void setupListenersForValidation() {
 		this.wordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
@@ -223,55 +302,78 @@ public class WordCloudGuiCodeBehind {
 			}
 		});
 	}
+	
+	/**
+	 * Change color.
+	 *
+	 * @param event the event
+	 */
 	@FXML
 	void changeColor(ActionEvent event) {
-		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
-				, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+				this.canvas.getGraphicsContext2D().getCanvas().getHeight());
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
 		if (this.colorComboBox.getValue().toString().equals("Hot")) {
 			this.viewmodel.changeColor(1);
-		}else if (this.colorComboBox.getValue().toString().equals("Forest")) {
+		} else if (this.colorComboBox.getValue().toString().equals("Forest")) {
 			this.viewmodel.changeColor(2);
-		}else if (this.colorComboBox.getValue().toString().equals("Cold")) {
+		} else if (this.colorComboBox.getValue().toString().equals("Cold")) {
 			this.viewmodel.changeColor(3);
 		}
 	}
+	
+	/**
+	 * Handle incrementing.
+	 *
+	 * @param event the event
+	 */
 	@FXML
     void handleIncrementing(ActionEvent event) {
 		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
 		if (selectedWord != null) {
 
-			selectedWord.setFrequency(selectedWord.getFrequency()+1);
+			selectedWord.setFrequency(selectedWord.getFrequency() + 1);
 
-			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
-					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+					this.canvas.getGraphicsContext2D().getCanvas().getHeight());
 			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 			this.canvas.getGraphicsContext2D().setLineWidth(2);
 			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
 		}
     }
 
+	/**
+	 * Handle decrementing.
+	 *
+	 * @param event the event
+	 */
 	@FXML
     void handleDecrementing(ActionEvent event) {
 		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
 		if (selectedWord != null) {
 			if (selectedWord.getFrequency() != 1) {
 
-				selectedWord.setFrequency(selectedWord.getFrequency()-1);
+				selectedWord.setFrequency(selectedWord.getFrequency() - 1);
 			}
 			
-			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
-					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+					this.canvas.getGraphicsContext2D().getCanvas().getHeight());
 			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 			this.canvas.getGraphicsContext2D().setLineWidth(2);
 			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
 		}
     }
+	
+	/**
+	 * Handle list remove.
+	 *
+	 * @param event the event
+	 */
 	@FXML
     void handleListRemove(ActionEvent event) {
-    		WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
+    	WordData selectedWord = this.wordListView.getSelectionModel().getSelectedItem();
 		if (selectedWord != null) {
 			try {
 				if (!this.viewmodel.removeWord()) {
@@ -289,18 +391,24 @@ public class WordCloudGuiCodeBehind {
 				alert.showAndWait();
 			}
 
-			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
-					, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+					this.canvas.getGraphicsContext2D().getCanvas().getHeight());
 			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 			this.canvas.getGraphicsContext2D().setLineWidth(2);
 			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
 		}
 
     }
+	
+	/**
+	 * Change sort.
+	 *
+	 * @param event the event
+	 */
 	@FXML
 	void changeSort(ActionEvent event) {
-		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
-				, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+				this.canvas.getGraphicsContext2D().getCanvas().getHeight());
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
@@ -315,9 +423,14 @@ public class WordCloudGuiCodeBehind {
 		}
 	}
 
+    /**
+     * Handle check selection.
+     *
+     * @param event the event
+     */
     @FXML
     void handleCheckSelection(ActionEvent event) {
-    		this.viewmodel.checkSelection(this.canvas.getGraphicsContext2D());
+    	this.viewmodel.checkSelection(this.canvas.getGraphicsContext2D());
     }
 
 }
