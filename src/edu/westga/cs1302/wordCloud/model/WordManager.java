@@ -231,8 +231,7 @@ public class WordManager implements  Collection<WordData>{
 				return 0;
 			}
 		});
-		Set<Entry<String, WordData>> setRe = this.wordManage.entrySet();
-		List<Entry<String, WordData>> listRe = new ArrayList<Entry<String, WordData>>(setRe);
+		List<Entry<String, WordData>> listRe = new ArrayList<Entry<String, WordData>>(set);
 		Collections.sort(listRe, new Comparator<Map.Entry<String, WordData>>() {
 
 			@Override
@@ -245,11 +244,11 @@ public class WordManager implements  Collection<WordData>{
 				return 0;
 			}
 		});
-		
+		int size = this.wordManage.size();
 		this.wordManage = new LinkedHashMap<String, WordData>();
 		int count = 0;
 		int countRe = 0;
-		for (int index = 0; index < list.size(); index++) {
+		for (int index = 0; index <= size+2; index++) {
 			if (index %2 == 0) {
 				this.wordManage.put(list.get(count).getKey(), list.get(count).getValue());
 				count++;
@@ -257,13 +256,6 @@ public class WordManager implements  Collection<WordData>{
 				this.wordManage.put(listRe.get(countRe).getKey(), listRe.get(countRe).getValue());
 				countRe++;
 			}
-		}
-		System.out.println(list.size() + "   ");
-
-		for (Map.Entry<String, WordData> entry : list) {
-			System.out.println(entry.getValue().getFrequency());
-		}for (Map.Entry<String, WordData> entry : listRe) {
-			System.out.println(entry.getValue().getFrequency());
 		}
 		return this.wordManage;
 		

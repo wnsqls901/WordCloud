@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -80,6 +81,9 @@ public class WordCloudGuiCodeBehind {
 
     @FXML
     private ComboBox<String> sortComboBox;
+
+    @FXML
+    private CheckBox checkBox;
     
     private ObservableList<String> list = FXCollections.observableArrayList("Hot","Forest","Cold");
 
@@ -126,6 +130,7 @@ public class WordCloudGuiCodeBehind {
 		this.removeListItem.disableProperty().bind(MenuItemEnabled);
 		this.incrementingList.disableProperty().bind(MenuItemEnabled);
 		this.decrementingList.disableProperty().bind(MenuItemEnabled);
+		this.checkBox.selectedProperty().bindBidirectional(this.viewmodel.getSelectProperty());
 
 	}
 
@@ -309,5 +314,10 @@ public class WordCloudGuiCodeBehind {
 			this.viewmodel.sortWords(2);
 		}
 	}
+
+    @FXML
+    void handleCheckSelection(ActionEvent event) {
+    		this.viewmodel.checkSelection(this.canvas.getGraphicsContext2D());
+    }
 
 }
