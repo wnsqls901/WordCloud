@@ -43,5 +43,6 @@ public class WordData {
 	public String toString() {
 		return this.getData().toLowerCase() + ": " + this.frequency;
 	}
+
 	
 }

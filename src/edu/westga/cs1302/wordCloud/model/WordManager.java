@@ -1,9 +1,16 @@
 package edu.westga.cs1302.wordCloud.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 
 public class WordManager implements  Collection<WordData>{
@@ -128,7 +135,33 @@ public class WordManager implements  Collection<WordData>{
 		}
 		return removedAll;
 	}
+	public Map<String, WordData> getWordManage() {
+		return this.wordManage;
+	}
 
+	public void setWordManage(Map<String, WordData> wordManage) {
+		this.wordManage = wordManage;
+	}
+	public void sortByFrequency() {
+		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
+		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
+		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
+
+			@Override
+			public int compare(Entry<String, WordData> oldWord, Entry<String, WordData> newWord) {
+				if (oldWord.getValue().getFrequency() < newWord.getValue().getFrequency()) {
+					return -1;
+				} else if (oldWord.getValue().getFrequency() > newWord.getValue().getFrequency()) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		this.wordManage = new LinkedHashMap<String, WordData>();
+		for (Map.Entry<String, WordData> entry : list) {
+			this.wordManage.put(entry.getKey(), entry.getValue());
+		}
+	}
 	@Override
 	public boolean retainAll(Collection<?> arg0) {
 		throw new UnsupportedOperationException();
@@ -150,5 +183,27 @@ public class WordManager implements  Collection<WordData>{
 			throw new IllegalArgumentException("array should not be null");
 		}
 		return this.wordManage.values().toArray(word);
+	}
+
+	public void sortDefault() {
+		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
+		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
+		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
+
+			@Override
+			public int compare(Entry<String, WordData> oldWord, Entry<String, WordData> newWord) {
+				if (oldWord.getValue().getFrequency() < newWord.getValue().getFrequency()) {
+					return -1;
+				} else if (oldWord.getValue().getFrequency() > newWord.getValue().getFrequency()) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		this.wordManage = new HashMap<String, WordData>();
+		for (Map.Entry<String, WordData> entry : list) {
+			this.wordManage.put(entry.getKey(), entry.getValue());
+		}
+		
 	}
 }

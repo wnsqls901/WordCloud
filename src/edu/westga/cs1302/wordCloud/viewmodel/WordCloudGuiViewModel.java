@@ -30,9 +30,10 @@ public class WordCloudGuiViewModel {
 	private StringProperty displayProperty;
 	private WordManager manage;
 	private ArrayList<Color> colors;
-	
+	private ArrayList<Double> maxHeights;
 	public WordCloudGuiViewModel() {
 		
+		this.maxHeights = new ArrayList<Double>();
 		this.wordProperty = new SimpleStringProperty();
 		this.frequencyProperty = new SimpleStringProperty();
 		this.displayProperty = new SimpleStringProperty();
@@ -144,11 +145,15 @@ public class WordCloudGuiViewModel {
 		gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
 		gc.strokeRect(0, 0, 445, 277);
-		
-		int x = 0;
-		int y = 50;
-		int size;
+
+		this.checkHeightBetweenLines(gc);
+
+		System.out.println(this.maxHeights);
+		double x = 0;
+		double size;
 		int index = 0;
+		int count = 1;
+		double y = this.maxHeights.get(0);
 		for (WordData word : this.manage) {
 			if (index == this.colors.size() -1) {
 				index = 0;
@@ -165,19 +170,60 @@ public class WordCloudGuiViewModel {
 			text.setFont(font);
 			gc.setFont(text.getFont());
 			gc.setFill(this.colors.get(index));
-			index++;
 			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
 				x = 0;
-				y += 50;
+				y += this.maxHeights.get(count);
+
+				System.out.println(y);
+				count++;
 			}
+
+			index++;
 			
 			gc.fillText(text.getText().toLowerCase(), x, y);
 
 			x += text.getLayoutBounds().getWidth() + 3;
 
-			//System.out.println(x + " "+ gc.getCanvas().getLayoutBounds().getMaxX() + " " + 31);
-		}	
+			//System.out.println(x + " "+ gc.getCanvas().getLayoutBounds().getMaxX());
+			//System.out.println(y + " "+ gc.getCanvas().getLayoutBounds().getMaxY());
+		}
+		this.maxHeights = new ArrayList<Double>();
 
+	}
+	private void checkHeightBetweenLines(GraphicsContext gc) {
+		double x = 0;
+		double maxHeight=0;
+		int index = 0;
+		double size;
+		for (WordData word : this.manage) {
+			
+			size = 10;
+			Text text = new Text(word.getData());
+			if (word.getFrequency() >= 5) {
+				size = 50;
+			} else {
+				size *= word.getFrequency();
+			}
+
+			Font font = new Font(size);
+			text.setFont(font);
+			gc.setFont(text.getFont());
+			gc.setFill(this.colors.get(index));
+			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
+				x = 0;
+				this.maxHeights.add(index, maxHeight);
+				maxHeight = 0;
+				index++;
+				
+			}
+
+			if (maxHeight <= text.getFont().getSize()) {
+				maxHeight = text.getFont().getSize();
+			}
+			x += text.getLayoutBounds().getWidth() + 3;
+		}
+		this.maxHeights.add(index, maxHeight);
+		
 	}
 	public void addWordsFromFile(File name) {
 		this.manage = new WordManager();
@@ -233,6 +279,22 @@ public class WordCloudGuiViewModel {
 				this.colors.add(index, newColor);
 			}
 		}
+	}
+
+	public void sortWords(int number) {
+		if (number == 0) {
+			this.manage.sortDefault();
+			this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			this.updateDisplay();
+			
+		}
+		if (number == 1) {
+			this.manage.sortByFrequency();
+			this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			this.updateDisplay();
+			
+		}
+		
 	}
 
 }

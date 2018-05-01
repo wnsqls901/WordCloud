@@ -76,9 +76,14 @@ public class WordCloudGuiCodeBehind {
     private Button generateButton;
     
     @FXML
-    private ComboBox<String> comboBox;
+    private ComboBox<String> colorComboBox;
+
+    @FXML
+    private ComboBox<String> sortComboBox;
     
     private ObservableList<String> list = FXCollections.observableArrayList("Hot","Forest","Cold");
+
+    private ObservableList<String> sortList = FXCollections.observableArrayList("Default","Frequency","Frequency-mix");
     
     private WordCloudGuiViewModel viewmodel;
   
@@ -88,7 +93,8 @@ public class WordCloudGuiCodeBehind {
     
     @FXML
 	private void initialize() {
-    		this.comboBox.setItems(list);
+    		this.colorComboBox.setItems(list);
+    		this.sortComboBox.setItems(sortList);
 		WordCloudGuiCodeBehind.this.frequencyErrorLabel.setVisible(false);		
 		WordCloudGuiCodeBehind.this.wordErrorLabel.setVisible(false);
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
@@ -219,11 +225,11 @@ public class WordCloudGuiCodeBehind {
 		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
 		this.canvas.getGraphicsContext2D().setLineWidth(2);
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
-		if (this.comboBox.getValue().toString().equals("Hot")) {
+		if (this.colorComboBox.getValue().toString().equals("Hot")) {
 			this.viewmodel.changeColor(1);
-		}else if (this.comboBox.getValue().toString().equals("Forest")) {
+		}else if (this.colorComboBox.getValue().toString().equals("Forest")) {
 			this.viewmodel.changeColor(2);
-		}else if (this.comboBox.getValue().toString().equals("Cold")) {
+		}else if (this.colorComboBox.getValue().toString().equals("Cold")) {
 			this.viewmodel.changeColor(3);
 		}
 	}
@@ -286,5 +292,19 @@ public class WordCloudGuiCodeBehind {
 		}
 
     }
+	@FXML
+	void changeSort(ActionEvent event) {
+		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth()
+				, this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+		this.canvas.getGraphicsContext2D().setLineWidth(2);
+		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+		if (this.sortComboBox.getValue().toString().equals("Default")) {
+			this.viewmodel.sortWords(0);
+		}
+		if (this.sortComboBox.getValue().toString().equals("Frequency")) {
+			this.viewmodel.sortWords(1);
+		}
+	}
 
 }
