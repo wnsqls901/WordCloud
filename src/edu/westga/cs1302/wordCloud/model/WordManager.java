@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 
 public class WordManager implements  Collection<WordData>{
@@ -214,7 +215,7 @@ public class WordManager implements  Collection<WordData>{
 		return this.wordManage;	
 	}
 
-	public LinkedHashMap<String, WordData> sortMixed() {
+	public Map<String, WordData> sortMixed() {
 		this.frequencies = new ArrayList<Integer>();
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
 		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
@@ -230,24 +231,41 @@ public class WordManager implements  Collection<WordData>{
 				return 0;
 			}
 		});
-		this.wordManage = new LinkedHashMap<String, WordData>();
-		this.newMap = new LinkedHashMap<String, WordData>();
-		for (Map.Entry<String, WordData> entry : list) {
-			this.frequencies.add(entry.getValue().getFrequency());
-		}
-		int medianPoint = 0;
-		int median = 0;
-		if (this.frequencies.size() % 2 != 0) {
-			medianPoint = (this.frequencies.size() - 1) / 2;
-			median = this.frequencies.get(medianPoint);
-		}
-		for (Map.Entry<String, WordData> entry : list) {
+		Set<Entry<String, WordData>> setRe = this.wordManage.entrySet();
+		List<Entry<String, WordData>> listRe = new ArrayList<Entry<String, WordData>>(setRe);
+		Collections.sort(listRe, new Comparator<Map.Entry<String, WordData>>() {
 
-			this.wordManage.put(entry.getKey(), entry.getValue());
-			if (entry.getValue().getFrequency() != median) {
-				this.newMap.put(entry.getKey(), entry.getValue());
+			@Override
+			public int compare(Entry<String, WordData> oldWord, Entry<String, WordData> newWord) {
+				if (oldWord.getValue().getFrequency() < newWord.getValue().getFrequency()) {
+					return 1;
+				} else if (oldWord.getValue().getFrequency() > newWord.getValue().getFrequency()) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		
+		this.wordManage = new LinkedHashMap<String, WordData>();
+		int count = 0;
+		int countRe = 0;
+		for (int index = 0; index < list.size(); index++) {
+			if (index %2 == 0) {
+				this.wordManage.put(list.get(count).getKey(), list.get(count).getValue());
+				count++;
+			} else if (index %2 == 1) {
+				this.wordManage.put(listRe.get(countRe).getKey(), listRe.get(countRe).getValue());
+				countRe++;
 			}
 		}
-		return this.newMap;
+		System.out.println(list.size() + "   ");
+
+		for (Map.Entry<String, WordData> entry : list) {
+			System.out.println(entry.getValue().getFrequency());
+		}for (Map.Entry<String, WordData> entry : listRe) {
+			System.out.println(entry.getValue().getFrequency());
+		}
+		return this.wordManage;
+		
 	}
 }
