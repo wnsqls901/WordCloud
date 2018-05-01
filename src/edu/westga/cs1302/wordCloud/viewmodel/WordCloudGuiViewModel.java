@@ -283,16 +283,17 @@ public class WordCloudGuiViewModel {
 
 	public void sortWords(int number) {
 		if (number == 0) {
-			this.manage.sortDefault();
-			this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			this.wordsProperty.set(FXCollections.observableArrayList(this.manage.sortDefault().values()));
 			this.updateDisplay();
 			
 		}
 		if (number == 1) {
-			this.manage.sortByFrequency();
-			this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+			this.wordsProperty.set(FXCollections.observableArrayList(this.manage.sortByFrequency().values()));
 			this.updateDisplay();
-			
+		}
+		if (number == 2) {
+			this.wordsProperty.set(FXCollections.observableArrayList(this.manage.sortMixed().values()));
+			this.updateDisplay();
 		}
 		
 	}

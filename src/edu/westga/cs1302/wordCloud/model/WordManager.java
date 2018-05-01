@@ -15,8 +15,12 @@ import java.util.Set;
 
 public class WordManager implements  Collection<WordData>{
 	private Map<String, WordData> wordManage;
+	private ArrayList<Integer> frequencies;
+	private LinkedHashMap<String,WordData> newMap;
 	
 	public WordManager() {
+		this.newMap = new LinkedHashMap<String, WordData>();
+		this.frequencies = new ArrayList<Integer>();
 		this.wordManage = new HashMap<String, WordData>();
 	}
 	
@@ -142,7 +146,8 @@ public class WordManager implements  Collection<WordData>{
 	public void setWordManage(Map<String, WordData> wordManage) {
 		this.wordManage = wordManage;
 	}
-	public void sortByFrequency() {
+	public Map<String, WordData> sortByFrequency() {
+		this.frequencies = new ArrayList<Integer>();
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
 		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
 		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
@@ -160,7 +165,9 @@ public class WordManager implements  Collection<WordData>{
 		this.wordManage = new LinkedHashMap<String, WordData>();
 		for (Map.Entry<String, WordData> entry : list) {
 			this.wordManage.put(entry.getKey(), entry.getValue());
+			this.frequencies.add(entry.getValue().getFrequency());
 		}
+		return this.wordManage;
 	}
 	@Override
 	public boolean retainAll(Collection<?> arg0) {
@@ -185,7 +192,7 @@ public class WordManager implements  Collection<WordData>{
 		return this.wordManage.values().toArray(word);
 	}
 
-	public void sortDefault() {
+	public Map<String, WordData>  sortDefault() {
 		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
 		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
 		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
@@ -204,6 +211,43 @@ public class WordManager implements  Collection<WordData>{
 		for (Map.Entry<String, WordData> entry : list) {
 			this.wordManage.put(entry.getKey(), entry.getValue());
 		}
-		
+		return this.wordManage;	
+	}
+
+	public LinkedHashMap<String, WordData> sortMixed() {
+		this.frequencies = new ArrayList<Integer>();
+		Set<Entry<String, WordData>> set = this.wordManage.entrySet();
+		List<Entry<String, WordData>> list = new ArrayList<Entry<String, WordData>>(set);
+		Collections.sort(list, new Comparator<Map.Entry<String, WordData>>() {
+
+			@Override
+			public int compare(Entry<String, WordData> oldWord, Entry<String, WordData> newWord) {
+				if (oldWord.getValue().getFrequency() < newWord.getValue().getFrequency()) {
+					return -1;
+				} else if (oldWord.getValue().getFrequency() > newWord.getValue().getFrequency()) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		this.wordManage = new LinkedHashMap<String, WordData>();
+		this.newMap = new LinkedHashMap<String, WordData>();
+		for (Map.Entry<String, WordData> entry : list) {
+			this.frequencies.add(entry.getValue().getFrequency());
+		}
+		int medianPoint = 0;
+		int median = 0;
+		if (this.frequencies.size() % 2 != 0) {
+			medianPoint = (this.frequencies.size() - 1) / 2;
+			median = this.frequencies.get(medianPoint);
+		}
+		for (Map.Entry<String, WordData> entry : list) {
+
+			this.wordManage.put(entry.getKey(), entry.getValue());
+			if (entry.getValue().getFrequency() != median) {
+				this.newMap.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return this.newMap;
 	}
 }

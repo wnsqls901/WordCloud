@@ -305,6 +305,9 @@ public class WordCloudGuiCodeBehind {
 		if (this.sortComboBox.getValue().toString().equals("Frequency")) {
 			this.viewmodel.sortWords(1);
 		}
+		if (this.sortComboBox.getValue().toString().equals("Frequency-mix")) {
+			this.viewmodel.sortWords(2);
+		}
 	}
 
 }
