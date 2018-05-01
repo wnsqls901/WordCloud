@@ -58,28 +58,40 @@ public class WordCloudGuiViewModel {
 	
 	/** The max width. */
 	private ArrayList<Double> maxWidth;
+
+	/** The max Y. */
+	private ArrayList<Double> maxY;
 	
 	/** The font height. */
 	private double fontHeight;
+	
+	private ArrayList<Double> maxHeightsForCenter;
+
+	private final BooleanProperty isEmptyWordsProperty;
 	
 	/**
 	 * Instantiates a new word cloud gui view model.
 	 */
 	public WordCloudGuiViewModel() {
 		
+		this.maxHeightsForCenter = new ArrayList<Double>();
 		this.fontHeight = 0;
+		this.maxY = new ArrayList<Double>();
 		this.maxHeights = new ArrayList<Double>();
 		this.maxWidth = new ArrayList<Double>();
 		this.wordProperty = new SimpleStringProperty();
 		this.frequencyProperty = new SimpleStringProperty();
 		this.displayProperty = new SimpleStringProperty();
 
+		this.isEmptyWordsProperty = new SimpleBooleanProperty();
+
 		this.selectProperty = new SimpleBooleanProperty();
 		this.selectProperty.setValue(false);
 		this.manage = new WordManager();
+
+		this.updateEmptyWordsProperty();
 		this.wordsProperty = new SimpleListProperty<WordData>(FXCollections.observableArrayList(this.manage));
 		this.colors = new ArrayList<Color>();
-
 		for (int index = 0; index < 20; index++) {
 			Random rand = new Random();
 			Color newColor = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
@@ -87,7 +99,14 @@ public class WordCloudGuiViewModel {
 		}
 		
 	}
-
+	/**
+	 * Gets the empty words property.
+	 *
+	 * @return the empty words property
+	 */
+	public BooleanProperty isEmptyWordsProperty() {
+		return this.isEmptyWordsProperty;
+	}
 	/**
 	 * Gets the select property.
 	 *
@@ -134,6 +153,13 @@ public class WordCloudGuiViewModel {
 		return this.displayProperty;
 	}
 	
+	private void updateEmptyWordsProperty() {
+		if (this.manage.size() == 0) {
+			this.isEmptyWordsProperty.setValue(true);
+		} else {
+			this.isEmptyWordsProperty.setValue(false);
+		}
+	}
 	/**
 	 * Adds the word.
 	 */
@@ -157,6 +183,7 @@ public class WordCloudGuiViewModel {
 			} else { 
 				data = new WordData(word, frequency);
 				this.addData(data);
+				this.updateEmptyWordsProperty();
 			}
 		}
 		this.wordProperty.set("");
@@ -214,6 +241,8 @@ public class WordCloudGuiViewModel {
 
 		this.wordProperty.set("");
 		this.frequencyProperty.set("");
+
+		this.updateEmptyWordsProperty();
 		return true;
 	}
 	
@@ -234,30 +263,37 @@ public class WordCloudGuiViewModel {
 	 * @param gc the gc
 	 */
 	public void generateWords(GraphicsContext gc) {
-		this.createCanvas(gc);
-		this.checkHeightBetweenLines(gc);
-		double x = 0;
-		double size;
-		int index = 0;
-		int count = 1;
-		double y = this.maxHeights.get(0);
-		for (WordData word : this.manage) {
-			if (index == this.colors.size() - 1) {
-				index = 0;
+		if (this.selectProperty.getValue()) {
+			this.checkSelection(gc);
+		} else {		
+			this.createCanvas(gc);
+			this.checkHeightBetweenLines(gc);
+			double x = 0;
+			double size;
+			int index = 0;
+			int count = 1;
+			double y = this.maxHeights.get(0);
+			for (WordData word : this.manage) {
+				if (index == this.colors.size() - 1) {
+					index = 0;
+				}
+				size = 10;
+				Text text = new Text(word.getData());
+				this.fontSetting(gc, size, index, word, text);
+				if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
+					x = 0;
+					y += this.maxHeights.get(count);
+					count++;
+				}
+				index++;
+				gc.fillText(text.getText().toLowerCase(), x, y);
+				x += text.getLayoutBounds().getWidth() + 3;
 			}
-			size = 10;
-			Text text = new Text(word.getData());
-			this.fontSetting(gc, size, index, word, text);
-			if (x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()) {
-				x = 0;
-				y += this.maxHeights.get(count);
-				count++;
-			}
-			index++;
-			gc.fillText(text.getText().toLowerCase(), x, y);
-			x += text.getLayoutBounds().getWidth() + 3;
+			this.maxHeights = new ArrayList<Double>();
+			this.maxWidth = new ArrayList<Double>();
+			this.fontHeight = 0;
+			this.maxHeightsForCenter = new ArrayList<Double>();
 		}
-		this.maxHeights = new ArrayList<Double>();
 	}
 
 	private void createCanvas(GraphicsContext gc) {
@@ -319,6 +355,8 @@ public class WordCloudGuiViewModel {
 				}
 				this.updateDisplay();
 				this.wordsProperty.set(FXCollections.observableArrayList(this.manage));
+
+				this.updateEmptyWordsProperty();
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -368,6 +406,12 @@ public class WordCloudGuiViewModel {
 				Color newColor = Color.rgb(0, 0, rand.nextInt(256));
 				this.colors.add(index, newColor);
 			}
+		} else if (number == 4) {
+			for (int index = 0; index < 20; index++) {
+				Random rand = new Random();
+				Color newColor = Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+				this.colors.add(index, newColor);
+			}
 		}
 	}
 
@@ -404,24 +448,26 @@ public class WordCloudGuiViewModel {
 			this.checkHeightBetweenLines(gc);
 			this.findRatioOfCenterPoint(gc);
 			double center = (gc.getCanvas().getLayoutBounds().getWidth() / 2);
+			double centerY = (gc.getCanvas().getLayoutBounds().getHeight() / 2);
 			double x = center - (this.maxWidth.get(0) / 2);
-			this.checkedGenerate(gc, center, x);
+			double y = centerY - (this.maxY.get(0) / 2);
+			this.checkedGenerate(gc, centerY, center, x, y);
 			this.maxHeights = new ArrayList<Double>();
 			this.maxWidth = new ArrayList<Double>();
 			this.fontHeight = 0;
+			this.maxHeightsForCenter = new ArrayList<Double>();
 		}
-		this.selectProperty.setValue(false);
 		
 	}
 
-	private void checkedGenerate(GraphicsContext gc, double center, double x) {
+	private void checkedGenerate(GraphicsContext gc, double centerY,  double center, double x, double y) {
 		double size;
 		int index = 0;
 		int count = 1;
 		int widthCount = 1;
 		int wordMax = 1;
 		int wordCount = 0;
-		double y = (this.fontHeight / 2);
+		y -= (this.fontHeight / 2);
 		for (WordData word : this.manage) {		
 			if (index == this.colors.size() - 1) {
 				index = 0;
@@ -433,9 +479,10 @@ public class WordCloudGuiViewModel {
 					|| x + text.getLayoutBounds().getWidth() >= gc.getCanvas().getLayoutBounds().getMaxX()
 					|| x <= gc.getCanvas().getLayoutBounds().getMinX()) {
 				x = center - (this.maxWidth.get(widthCount) / 2);
-				y += this.maxHeights.get(count);
+				y += this.maxHeightsForCenter.get(count);
 				wordMax++;
 				wordCount = 1;
+				count++;
 				widthCount++;
 			} else {
 				wordCount++;
@@ -464,36 +511,41 @@ public class WordCloudGuiViewModel {
 	 * @param gc the gc
 	 */
 	private void findRatioOfCenterPoint(GraphicsContext gc) {
-		
 		double size;
 		int index = 0;
 		int wordMax = 1;
 		int wordCount = 0;
 		double fontSize = 0;
+		double fontSizeY = 0;
+		double maxHeight = 0;
 		for (WordData word : this.manage) {
-
 			size = 10;
 			Text text = new Text(word.getData());
-		
-			if (index == this.colors.size() - 1) {
-				index = 0;
-			}
 			this.fontSetting(gc, size, index, word, text);
 			if (wordCount == wordMax) {
-				this.maxWidth.add(fontSize);
+				this.lastAdd(fontSize, fontSizeY, maxHeight);
 				wordMax++;
 				wordCount = 1;
+				maxHeight = 0;
 				fontSize = 0;
-
+				fontSizeY = 0;
 				this.fontHeight += text.getLayoutBounds().getHeight();
 			} else {
 				wordCount++;
 			}
+			if (maxHeight <= text.getFont().getSize()) {
+				maxHeight = text.getFont().getSize();
+			}
 			index++;
-			fontSize += text.getLayoutBounds().getWidth();
-			
+			fontSizeY += text.getLayoutBounds().getHeight();
+			fontSize += text.getLayoutBounds().getWidth();			
 		}
-		this.maxWidth.add(fontSize);
+		this.lastAdd(fontSize, fontSizeY, maxHeight);
 	}
-	
+
+	private void lastAdd(double fontSize, double fontSizeY, double maxHeight) {
+		this.maxHeightsForCenter.add(maxHeight);
+		this.maxWidth.add(fontSize);
+		this.maxY.add(fontSizeY);
+	}	
 }

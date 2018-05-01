@@ -111,7 +111,7 @@ public class WordCloudGuiCodeBehind {
     private CheckBox checkBox;
     
     /** The list. */
-    private ObservableList<String> list = FXCollections.observableArrayList("Hot", "Forest", "Cold");
+    private ObservableList<String> list = FXCollections.observableArrayList("Hot", "Forest", "Cold", "Random");
 
     /** The sort list. */
     private ObservableList<String> sortList = FXCollections.observableArrayList("Default", "Frequency", "Frequency-mix");
@@ -140,7 +140,7 @@ public class WordCloudGuiCodeBehind {
 		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
     	this.bindToViewModel();
     	this.setupListenersForValidation();
-
+    	this.bindButtonsDisableProperty();
     	this.setupListenerForListView();
     }
 
@@ -209,7 +209,11 @@ public class WordCloudGuiCodeBehind {
      */
     @FXML
     void handleGenerate(ActionEvent event) {
-    	this.viewmodel.generateWords(this.canvas.getGraphicsContext2D());
+    	try {
+    		this.viewmodel.generateWords(this.canvas.getGraphicsContext2D());
+    	} catch (IndexOutOfBoundsException e) {
+    		
+    	}
     }
     
     /**
@@ -274,6 +278,16 @@ public class WordCloudGuiCodeBehind {
 
 		alert.showAndWait();
 	}
+	private void bindButtonsDisableProperty() {
+		
+		this.addButton.disableProperty().bind(this.wordTextField.textProperty().isEmpty()
+				.or(this.frequencyTextField.textProperty().isEmpty()));
+		this.updateButton.disableProperty().bind(this.wordTextField.textProperty().isEmpty()
+				.or(this.frequencyTextField.textProperty().isEmpty()));
+		this.removeButton.disableProperty().bind(this.wordTextField.textProperty().isEmpty()
+				.or(this.viewmodel.isEmptyWordsProperty()));
+	}
+
     
 	/**
 	 * Setup listeners for validation.
@@ -321,6 +335,8 @@ public class WordCloudGuiCodeBehind {
 			this.viewmodel.changeColor(2);
 		} else if (this.colorComboBox.getValue().toString().equals("Cold")) {
 			this.viewmodel.changeColor(3);
+		} else if (this.colorComboBox.getValue().toString().equals("Random")) {
+			this.viewmodel.changeColor(4);
 		}
 	}
 	
@@ -407,19 +423,21 @@ public class WordCloudGuiCodeBehind {
 	 */
 	@FXML
 	void changeSort(ActionEvent event) {
-		this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
-				this.canvas.getGraphicsContext2D().getCanvas().getHeight());
-		this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
-		this.canvas.getGraphicsContext2D().setLineWidth(2);
-		this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
-		if (this.sortComboBox.getValue().toString().equals("Default")) {
-			this.viewmodel.sortWords(0);
-		}
-		if (this.sortComboBox.getValue().toString().equals("Frequency")) {
-			this.viewmodel.sortWords(1);
-		}
-		if (this.sortComboBox.getValue().toString().equals("Frequency-mix")) {
-			this.viewmodel.sortWords(2);
+		try {
+			this.canvas.getGraphicsContext2D().clearRect(0, 0, this.canvas.getGraphicsContext2D().getCanvas().getWidth(),
+					this.canvas.getGraphicsContext2D().getCanvas().getHeight());
+			this.canvas.getGraphicsContext2D().setStroke(Color.BLACK);
+			this.canvas.getGraphicsContext2D().setLineWidth(2);
+			this.canvas.getGraphicsContext2D().strokeRect(0, 0, 445, 277);
+			if (this.sortComboBox.getValue().toString().equals("Default")) {
+				this.viewmodel.sortWords(0);
+			} else if (this.sortComboBox.getValue().toString().equals("Frequency")) {
+				this.viewmodel.sortWords(1);
+			} else if (this.sortComboBox.getValue().toString().equals("Frequency-mix")) {
+				this.viewmodel.sortWords(2);
+			}
+		} catch (IndexOutOfBoundsException e) {
+			
 		}
 	}
 
@@ -430,7 +448,6 @@ public class WordCloudGuiCodeBehind {
      */
     @FXML
     void handleCheckSelection(ActionEvent event) {
-    	this.viewmodel.checkSelection(this.canvas.getGraphicsContext2D());
     }
 
 }
